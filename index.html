@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        h1{
+            color: brown;
+        }
+        tr {
+    color: green;
+    background-color: state-grencolr; /* This should be replaced with the desired color value */
+}
+
+tr.confirmd-red {
+    color: red;
+}
+
+tr.recoverd {
+    color: green;
+}
+
+tr.deceasd-red {
+    color: red;
+}
+
+        </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>COVID-19 Data Table</title>
+    <!-- Include Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1>COVID-19 Data Table</h1>
+        <table class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th>State</th>
+                    <th>Confirmed</th>
+                    <th>Recovered</th>
+                    <th>Deceased</th>
+                </tr>
+            </thead>
+            <tbody id="covidData">
+                <!-- Data will be populated here dynamically using JavaScript -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Include Bootstrap JS and your custom JavaScript -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        var url = "https://data.covid19india.org/csv/latest/states.csv";
+
+        fetch(url)
+            .then((response) => response.text())
+            .then((data) => {
+                var rows = data.split('\n');
+                var headers = rows[0].split(',');
+                var covidData = [];
+
+                for (var i = 1; i < rows.length; i++) {
+                    var row = rows[i].split(',');
+                    var dataObj = {
+                        State: row[0],
+                        Confirmed: row[1],
+                        Recovered: row[2],
+                        Deceased: row[3]
+                    };
+                    covidData.push(dataObj);
+                }
+
+                var covidDataElement = document.getElementById('covidData');
+                covidData.forEach(function (data) {
+                    var row = document.createElement('tr');
+                    for (var header of headers) {
+                        var cell = document.createElement('td');
+                        cell.textContent = data[header];
+                        row.appendChild(cell);
+                    }
+                    covidDataElement.appendChild(row);
+                });
+            })
+            .catch((error) => {
+                console.error("Error fetching data:", error);
+            });
+    </script>
+</body>
+</html>
